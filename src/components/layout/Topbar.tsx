@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { unidades } from "../../data/mock";
 import { cx } from "../../lib/format";
 import { useToast } from "../ui/Toast";
-import { IconBell, IconCheckIn, IconHelp, IconSearch } from "../ui/icons";
+import { IconBell, IconCheckIn, IconHelp, IconMoon, IconSearch, IconSun } from "../ui/icons";
 
 const notificacoes = [
   { titulo: "Atendimento impresso no caixa", sub: "Marcella Grings Lanes · R$ 211,00", tempo: "há 4 min", dot: "bg-warn", to: "/atendimentos/26742169" },
@@ -12,7 +12,7 @@ const notificacoes = [
   { titulo: "Sistema da operadora regional", sub: "Manutenção programada até as 16h", tempo: "há 2 h", dot: "bg-slate-400", to: "/dashboard" },
 ];
 
-export function Topbar() {
+export function Topbar({ dark, onToggleTheme }: { dark: boolean; onToggleTheme: () => void }) {
   const navigate = useNavigate();
   const toast = useToast();
   const [unidade, setUnidade] = useState(unidades[0]);
@@ -94,6 +94,9 @@ export function Topbar() {
             </>
           )}
         </div>
+        <button onClick={onToggleTheme} aria-label="Alternar tema" className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-ink">
+          {dark ? <IconSun /> : <IconMoon />}
+        </button>
         <button onClick={() => toast("Central de ajuda — em breve", "info")} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-ink">
           <IconHelp />
         </button>

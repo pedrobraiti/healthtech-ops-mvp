@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { PageHeader } from "../components/layout/Shell";
+import { FinanceiroNav } from "../components/layout/FinanceiroNav";
+import { CountMoney } from "../components/ui/Animated";
 import { Badge, Button, Card, Select } from "../components/ui/primitives";
 import { Tabs } from "../components/ui/Tabs";
 import { useToast } from "../components/ui/Toast";
@@ -49,7 +51,8 @@ export function Financeiro() {
   const saldo = totalReceber - totalPagar;
 
   return (
-    <div className="p-6">
+    <div className="space-y-5 p-6">
+      <FinanceiroNav />
       <PageHeader
         title="Financeiro"
         subtitle="Contas a receber, repasses a parceiros e fluxo de caixa."
@@ -67,7 +70,7 @@ export function Financeiro() {
             <span className="label">A Receber</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-success-50 text-success"><IconArrowUp width={17} height={17} /></span>
           </div>
-          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-success">{brl(totalReceber)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-success"><CountMoney value={totalReceber} /></div>
           <div className="mt-1 text-xs text-muted">{contasReceber.length} lançamentos em aberto</div>
         </Card>
         <Card className="p-4">
@@ -75,7 +78,7 @@ export function Financeiro() {
             <span className="label">A Pagar (repasses)</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-danger-50 text-danger"><IconArrowDown width={17} height={17} /></span>
           </div>
-          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-danger">{brl(totalPagar)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-danger"><CountMoney value={totalPagar} /></div>
           <div className="mt-1 text-xs text-muted">{contasPagar.length} repasses programados</div>
         </Card>
         <Card className="border-brand-100 bg-brand-50/40 p-4">
@@ -83,7 +86,7 @@ export function Financeiro() {
             <span className="label">Saldo projetado</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white"><IconMoney width={16} height={16} /></span>
           </div>
-          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-brand">{brl(saldo)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-brand"><CountMoney value={saldo} /></div>
           <div className="mt-1 text-xs text-muted">Receber − Pagar no período</div>
         </Card>
       </div>

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { PageHeader } from "../components/layout/Shell";
+import { FinanceiroNav } from "../components/layout/FinanceiroNav";
+import { CountMoney } from "../components/ui/Animated";
 import { Badge, Button, Card, Select } from "../components/ui/primitives";
 import { Tabs } from "../components/ui/Tabs";
 import { useToast } from "../components/ui/Toast";
@@ -26,6 +28,7 @@ export function ResumoCaixa() {
 
   return (
     <div className="p-6">
+      <div className="mb-5"><FinanceiroNav /></div>
       <PageHeader
         title="Resumo de Caixa"
         actions={
@@ -48,21 +51,21 @@ export function ResumoCaixa() {
             <span className="label">Entradas</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-success-50 text-success"><IconArrowUp width={18} height={18} /></span>
           </div>
-          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-success">{brl(2336)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-success"><CountMoney value={2336} /></div>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <span className="label">Saídas</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-danger-50 text-danger"><IconArrowDown width={18} height={18} /></span>
           </div>
-          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-danger">{brl(0)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-danger"><CountMoney value={0} /></div>
         </Card>
         <Card className="border-brand-100 bg-brand-50/40 p-4">
           <div className="flex items-center justify-between">
             <span className="label">Saldo Atual</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white"><IconMoney width={16} height={16} /></span>
           </div>
-          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-brand">{brl(2336)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-brand"><CountMoney value={2336} /></div>
         </Card>
       </div>
 

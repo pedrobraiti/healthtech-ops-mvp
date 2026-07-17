@@ -1,15 +1,25 @@
 import { useState } from "react";
 import { PageHeader } from "../components/layout/Shell";
-import { Badge, Button, Checkbox, Input, Label, Radio, Section, Select } from "../components/ui/primitives";
+import { Badge, Button, Checkbox, Input, Label, Radio, Section, Select, StatusBadge } from "../components/ui/primitives";
 import { Modal } from "../components/ui/Modal";
+import { CadastroList, type Column } from "../components/ui/CadastroList";
 import { useToast } from "../components/ui/Toast";
-import { especialistasParceiro } from "../data/mock";
+import { especialistasParceiro, parceirosList } from "../data/mock";
 import { IconParceiros, IconDownload, IconFile, IconPlus } from "../components/ui/icons";
 
 const aliquotas = [
   { faixa: "Sociedade / Cooperado", repasse: "70%", retencao: "30%" },
   { faixa: "Mensalidade", repasse: "85%", retencao: "15%" },
   { faixa: "Preço Cheio (Particular)", repasse: "60%", retencao: "40%" },
+];
+
+type ParceiroRow = (typeof parceirosList)[number];
+const parceirosColumns: Column<ParceiroRow>[] = [
+  { key: "fantasia", header: "Nome Fantasia", render: (p) => <span className="font-medium text-ink">{p.fantasia}</span> },
+  { key: "categoria", header: "Categoria", render: (p) => <span className="text-muted">{p.categoria}</span> },
+  { key: "cidade", header: "Cidade", render: (p) => <span className="text-muted">{p.cidade}</span> },
+  { key: "especialistas", header: "Especialistas", align: "center", render: (p) => <span className="font-mono text-[12px] text-ink">{p.especialistas}</span> },
+  { key: "status", header: "Status", render: (p) => <StatusBadge status={p.status} /> },
 ];
 
 export function CadastroParceiro() {
@@ -148,6 +158,17 @@ export function CadastroParceiro() {
             </div>
           </Section>
         </div>
+      </div>
+
+      <div className="mt-5">
+        <CadastroList
+          title="Parceiros cadastrados"
+          columns={parceirosColumns}
+          rows={parceirosList}
+          searchKeys={["fantasia", "categoria", "cidade"]}
+          placeholder="Buscar por nome, categoria ou cidade…"
+          onRowClick={(p) => toast(`Abrindo cadastro de ${p.fantasia}`, "info")}
+        />
       </div>
 
       <Modal

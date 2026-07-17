@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FinanceiroNav } from "../components/layout/FinanceiroNav";
 import { Button, Card, Checkbox, Input, Label, Select } from "../components/ui/primitives";
 import { Tabs } from "../components/ui/Tabs";
 import { Modal } from "../components/ui/Modal";
@@ -46,6 +47,9 @@ export function FrenteCaixa() {
 
   return (
     <div className="flex h-full flex-col">
+      <div className="border-b border-border-soft bg-white px-4 py-2.5">
+        <FinanceiroNav />
+      </div>
       {/* barra superior */}
       <div className="flex flex-wrap items-center gap-2 border-b border-border-soft bg-white px-4 py-2.5">
         <div className="flex items-center gap-3 pr-3">
@@ -59,7 +63,7 @@ export function FrenteCaixa() {
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-1.5">
           <Button variant="secondary" onClick={() => toast("Gaveta aberta", "info")}>Abrir Gaveta</Button>
-          <Button variant="secondary" onClick={() => navigate("/caixa/resumo")}>Resumo do Caixa</Button>
+          <Button variant="secondary" onClick={() => navigate("/financeiro/resumo")}>Resumo do Caixa</Button>
           <Button variant="secondary" onClick={() => setSangria(true)}>Lançar Sangria</Button>
           <Button variant="secondary" onClick={() => setSuprimento(true)}>Lançar Suprimento</Button>
           <Button variant="danger" onClick={() => toast("Fechamento de caixa iniciado", "info")}>Fechamento de Caixa</Button>

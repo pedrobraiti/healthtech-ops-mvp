@@ -1,15 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { cx } from "../../lib/format";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 
 export function Shell() {
+  const location = useLocation();
+  const [dark, setDark] = useState(() => localStorage.getItem("htops-theme") === "dark");
+
+  useEffect(() => {
+    localStorage.setItem("htops-theme", dark ? "dark" : "light");
+  }, [dark]);
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className={cx("theme-fade flex h-screen overflow-hidden bg-app", dark && "dark")}>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar />
+        <Topbar dark={dark} onToggleTheme={() => setDark((d) => !d)} />
         <main className="flex-1 overflow-y-auto">
-          <Outlet />
+          <div key={location.pathname} className="animate-route">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

@@ -1,11 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/layout/Shell";
-import { Badge, Button, Checkbox, Input, Label, Section, Select, Textarea } from "../components/ui/primitives";
+import { Badge, Button, Checkbox, Input, Label, Section, Select, StatusBadge, Textarea } from "../components/ui/primitives";
 import { Modal } from "../components/ui/Modal";
+import { CadastroList, type Column } from "../components/ui/CadastroList";
 import { useToast } from "../components/ui/Toast";
-import { dependentes } from "../data/mock";
+import { associadosList, dependentes } from "../data/mock";
 import { IconAssociados, IconPlus } from "../components/ui/icons";
+
+type AssociadoRow = (typeof associadosList)[number];
+const associadosColumns: Column<AssociadoRow>[] = [
+  { key: "nome", header: "Nome", render: (a) => <span className="font-medium text-ink">{a.nome}</span> },
+  { key: "cpf", header: "CPF", render: (a) => <span className="font-mono text-[12px] text-muted">{a.cpf}</span> },
+  { key: "matricula", header: "Matrícula", render: (a) => <span className="font-mono text-[12px] text-brand">{a.matricula}</span> },
+  { key: "cidade", header: "Cidade", render: (a) => <span className="text-muted">{a.cidade}</span> },
+  { key: "telefone", header: "Telefone", render: (a) => <span className="font-mono text-[12px] text-muted">{a.telefone}</span> },
+  { key: "status", header: "Status", render: (a) => <StatusBadge status={a.status} /> },
+];
 
 const duplicados = [
   { nome: "Marcella Grings Lanes", nascimento: "05/03/1994", cidade: "Curitiba", uf: "PR" },
@@ -139,6 +150,17 @@ export function CadastroAssociado() {
             </div>
           </Section>
         </div>
+      </div>
+
+      <div className="mt-5">
+        <CadastroList
+          title="Associados cadastrados"
+          columns={associadosColumns}
+          rows={associadosList}
+          searchKeys={["nome", "cpf", "matricula", "cidade"]}
+          placeholder="Buscar por nome, CPF ou matrícula…"
+          onRowClick={(a) => toast(`Abrindo cadastro de ${a.nome}`, "info")}
+        />
       </div>
 
       {/* Modal de deduplicação */}

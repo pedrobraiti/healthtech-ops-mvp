@@ -4,7 +4,6 @@ import {
   IconAgenda,
   IconAssociados,
   IconAtendimentos,
-  IconCaixa,
   IconConfig,
   IconDashboard,
   IconFinanceiro,
@@ -14,6 +13,7 @@ import {
   IconRelatorios,
   IconSair,
   IconShield,
+  IconStetho,
 } from "../ui/icons";
 
 const items = [
@@ -22,8 +22,8 @@ const items = [
   { to: "/atendimentos", label: "Atendimentos", Icon: IconAtendimentos },
   { to: "/associados", label: "Associados", Icon: IconAssociados },
   { to: "/parceiros", label: "Parceiros", Icon: IconParceiros },
+  { to: "/especialistas", label: "Especialistas", Icon: IconStetho },
   { to: "/procedimentos", label: "Procedimentos", Icon: IconProcedimentos },
-  { to: "/caixa", label: "Caixa", Icon: IconCaixa },
   { to: "/financeiro", label: "Financeiro", Icon: IconFinanceiro },
   { to: "/relatorios", label: "Relatórios", Icon: IconRelatorios },
 ];

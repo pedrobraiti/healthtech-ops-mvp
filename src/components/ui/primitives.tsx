@@ -147,6 +147,8 @@ const statusStyles: Record<Status, string> = {
   "RESTITUÍDO": "bg-purple-50 text-purple-600 border-purple-200",
   PENDENTE: "bg-danger-50 text-danger border-danger/20",
   URGENTE: "bg-danger-50 text-danger border-danger/20",
+  ATIVO: "bg-success-50 text-success border-success/20",
+  INATIVO: "bg-slate-100 text-slate-500 border-slate-200",
 };
 
 export function StatusBadge({ status, className }: { status: Status; className?: string }) {

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/layout/Shell";
 import { Card, CardHeader, Badge, StatusBadge } from "../components/ui/primitives";
 import { MiniCalendar } from "../components/ui/MiniCalendar";
+import { CountInt } from "../components/ui/Animated";
 import { brl } from "../lib/format";
 import { proximosHorarios } from "../data/mock";
 import { IconCaixa, IconInfo } from "../components/ui/icons";
@@ -15,7 +16,7 @@ function Tile({ label, value, tone }: { label: string; value: number; tone: "inf
       <div className="flex-1">
         <div className="text-sm font-medium text-ink">{label}</div>
       </div>
-      <div className={`font-display text-3xl font-bold tabular-nums ${text}`}>{value}</div>
+      <div className={`font-display text-3xl font-bold tabular-nums ${text}`}><CountInt value={value} /></div>
     </div>
   );
 }

@@ -6,7 +6,9 @@ export type Status =
   | "CANCELADO"
   | "RESTITUÍDO"
   | "PENDENTE"
-  | "URGENTE";
+  | "URGENTE"
+  | "ATIVO"
+  | "INATIVO";
 
 export interface Atendimento {
   id: string;
@@ -168,6 +170,42 @@ export const motivosCancelamento = [
 ];
 
 export const unidades = ["Unidade Matriz", "Unidade Sul", "Unidade Norte"];
+
+/* ---------- Listas de cadastro (tabelas "Excel") ---------- */
+export const associadosList = [
+  { nome: "Marcella Grings Lanes", cpf: "052.448.409-08", matricula: "5795861", cidade: "Curitiba/PR", telefone: "(41) 99812-4407", status: "ATIVO" as Status },
+  { nome: "Ana Beatriz Maciel", cpf: "118.402.559-21", matricula: "8050219", cidade: "Curitiba/PR", telefone: "(41) 99640-1188", status: "ATIVO" as Status },
+  { nome: "João Pedro Santos", cpf: "394.220.180-55", matricula: "6212990", cidade: "Campo Largo/PR", telefone: "(41) 99203-7754", status: "ATIVO" as Status },
+  { nome: "Ana Carolina Ribeiro", cpf: "701.559.328-04", matricula: "2421178", cidade: "Curitiba/PR", telefone: "(41) 98871-9032", status: "ATIVO" as Status },
+  { nome: "Alziro Nogueira de Souza", cpf: "205.667.910-72", matricula: "8040586", cidade: "Pinhais/PR", telefone: "(41) 99567-3320", status: "CANCELADO" as Status },
+  { nome: "Ana Paula Marchi", cpf: "630.114.802-19", matricula: "1157303", cidade: "Curitiba/PR", telefone: "(41) 99745-2201", status: "ATIVO" as Status },
+];
+
+export const parceirosList = [
+  { fantasia: "Ciclo Diagnósticos", categoria: "Clínica Médica", cidade: "Curitiba/PR", especialistas: 8, status: "ATIVO" as Status },
+  { fantasia: "Laboratório Hadiak", categoria: "Laboratório", cidade: "Campo Largo/PR", especialistas: 4, status: "ATIVO" as Status },
+  { fantasia: "Ceccon & Etzel S/S", categoria: "Clínica Médica", cidade: "Curitiba/PR", especialistas: 6, status: "ATIVO" as Status },
+  { fantasia: "Cardio Prime Diagnósticos", categoria: "Diagnóstico por Imagem", cidade: "Curitiba/PR", especialistas: 3, status: "ATIVO" as Status },
+  { fantasia: "Clínica Working Med. Trabalho", categoria: "Clínica Médica", cidade: "Curitiba/PR", especialistas: 2, status: "CANCELADO" as Status },
+];
+
+export interface Especialista {
+  nome: string;
+  conselho: string;
+  especialidade: string;
+  tipo: "Médico" | "Enfermeiro" | "Técnico" | "Fisioterapeuta";
+  parceiro: string;
+  status: Status;
+}
+
+export const especialistasList: Especialista[] = [
+  { nome: "Dra. Julia de Freitas Azzolini", conselho: "CRM-PR 45.221", especialidade: "Ecografia / Radiologia", tipo: "Médico", parceiro: "Ciclo Diagnósticos", status: "ATIVO" },
+  { nome: "Dr. Carlos Eduardo Lima", conselho: "CRM-PR 38.104", especialidade: "Cardiologia", tipo: "Médico", parceiro: "Cardio Prime Diagnósticos", status: "ATIVO" },
+  { nome: "Dra. Ana Beatriz Costa", conselho: "CRM-PR 51.933", especialidade: "Dermatologia", tipo: "Médico", parceiro: "Ceccon & Etzel S/S", status: "ATIVO" },
+  { nome: "Dr. João Pedro Nogueira", conselho: "CRM-PR 42.780", especialidade: "Ortopedia", tipo: "Médico", parceiro: "Ciclo Diagnósticos", status: "ATIVO" },
+  { nome: "Enf. Marina Salles", conselho: "COREN-PR 220.145", especialidade: "Enfermagem / Coleta", tipo: "Enfermeiro", parceiro: "Laboratório Hadiak", status: "ATIVO" },
+  { nome: "Téc. Rafael Andrade", conselho: "CRTR-6 9.882", especialidade: "Radiologia (Técnico)", tipo: "Técnico", parceiro: "Cardio Prime Diagnósticos", status: "CANCELADO" },
+];
 
 /* ---------- Relatórios ---------- */
 export const faturamentoMensal = [
