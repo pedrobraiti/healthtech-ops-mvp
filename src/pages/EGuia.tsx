@@ -34,8 +34,8 @@ export function EGuia() {
           </div>
           <div className="text-right text-xs leading-relaxed text-muted">
             <div>Data de emissão: <span className="font-semibold text-ink">20/06/2026</span></div>
-            <div># Atendimento: <span className="font-semibold text-ink">26.571.732</span></div>
-            <div># Chave: <span className="font-semibold text-brand">HIMALNB8</span></div>
+            <div># Atendimento: <span className="font-mono font-semibold text-ink">26.571.732</span></div>
+            <div># Chave: <span className="font-mono font-semibold text-brand">HIMALNB8</span></div>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export function EGuia() {
                 {eguiaProcedimentos.map((p) => (
                   <tr key={p.cod}>
                     <td className="px-4 py-2 text-center">{p.qtd}</td>
-                    <td className="px-4 py-2 tabular-nums text-muted">{p.cod}</td>
+                    <td className="px-4 py-2 font-mono text-[12px] text-muted">{p.cod}</td>
                     <td className="px-4 py-2 font-medium text-ink">{p.descricao}</td>
                   </tr>
                 ))}

@@ -2,6 +2,8 @@
 
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
   --color-app: #f5f7fa;
   --color-surface: #ffffff;

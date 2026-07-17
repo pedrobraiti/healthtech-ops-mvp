@@ -12,6 +12,8 @@ import { CadastroAssociado } from "./pages/CadastroAssociado";
 import { CadastroParceiro } from "./pages/CadastroParceiro";
 import { PesquisaProcedimentos } from "./pages/PesquisaProcedimentos";
 import { EGuia } from "./pages/EGuia";
+import { Financeiro } from "./pages/Financeiro";
+import { Relatorios } from "./pages/Relatorios";
 import { Placeholder } from "./pages/Placeholder";
 
 export default function App() {
@@ -33,8 +35,8 @@ export default function App() {
         <Route path="/procedimentos" element={<PesquisaProcedimentos />} />
         <Route path="/caixa" element={<FrenteCaixa />} />
         <Route path="/caixa/resumo" element={<ResumoCaixa />} />
-        <Route path="/financeiro" element={<Placeholder title="Financeiro" />} />
-        <Route path="/relatorios" element={<Placeholder title="Relatórios" />} />
+        <Route path="/financeiro" element={<Financeiro />} />
+        <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/configuracoes" element={<Placeholder title="Configurações" />} />
       </Route>
 

@@ -37,7 +37,7 @@ export function Sidebar() {
           <IconShield width={20} height={20} />
         </div>
         <div className="leading-tight">
-          <div className="text-[15px] font-bold text-ink">HealthTech Ops</div>
+          <div className="font-display text-[15px] font-bold tracking-tight text-ink">HealthTech Ops</div>
           <div className="text-[11px] text-muted">Operador Interno</div>
         </div>
       </div>

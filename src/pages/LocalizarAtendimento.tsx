@@ -61,8 +61,8 @@ export function LocalizarAtendimento() {
           <tbody className="divide-y divide-border-soft">
             {filtrados.map((a) => (
               <tr key={a.id} className="cursor-pointer hover:bg-slate-50/60" onClick={() => navigate(`/atendimentos/${a.id}`)}>
-                <td className="px-4 py-3 font-semibold text-brand">{a.id}</td>
-                <td className="px-4 py-3 tabular-nums text-muted">{a.matricula}</td>
+                <td className="px-4 py-3 font-mono text-[12.5px] font-semibold text-brand">{a.id}</td>
+                <td className="px-4 py-3 font-mono text-[12.5px] text-muted">{a.matricula}</td>
                 <td className="px-4 py-3 font-medium text-ink">{a.usuario}</td>
                 <td className="px-4 py-3"><StatusBadge status={a.status} /></td>
                 <td className="px-4 py-3 text-right tabular-nums">{brl(a.valor)}</td>

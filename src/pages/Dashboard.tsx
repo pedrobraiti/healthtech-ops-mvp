@@ -15,7 +15,7 @@ function Tile({ label, value, tone }: { label: string; value: number; tone: "inf
       <div className="flex-1">
         <div className="text-sm font-medium text-ink">{label}</div>
       </div>
-      <div className={`text-3xl font-bold ${text}`}>{value}</div>
+      <div className={`font-display text-3xl font-bold tabular-nums ${text}`}>{value}</div>
     </div>
   );
 }

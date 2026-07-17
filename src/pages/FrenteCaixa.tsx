@@ -54,7 +54,7 @@ export function FrenteCaixa() {
             <span className="text-[15px] font-semibold text-ink">Frente de Caixa (PDV)</span>
           </div>
           <div className="text-xs text-muted">
-            Controle <span className="font-semibold text-ink">#982</span> · Operador <span className="font-semibold text-ink">Admin</span>
+            Controle <span className="font-mono font-semibold text-ink">#982</span> · Operador <span className="font-semibold text-ink">Admin</span>
           </div>
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-1.5">
@@ -84,7 +84,7 @@ export function FrenteCaixa() {
             {!selecionado ? (
               <button onClick={() => setSelecionado(true)} className="w-full rounded-lg border border-border-soft p-3 text-left transition-colors hover:border-brand hover:bg-brand-50/40">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-muted">Matrícula: 5795861</span>
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-muted">Matrícula: <span className="font-mono normal-case tracking-normal">5795861</span></span>
                   <span className="text-sm font-bold text-brand">{brl(TOTAL)}</span>
                 </div>
                 <div className="mt-1 text-sm font-semibold text-ink">Marcella Grings Lanes</div>
@@ -116,7 +116,7 @@ export function FrenteCaixa() {
               <tbody className="divide-y divide-border-soft">
                 {selecionado ? (
                   <tr className="hover:bg-slate-50/60">
-                    <td className="px-4 py-3 font-semibold text-brand">26742169</td>
+                    <td className="px-4 py-3 font-mono text-[12.5px] font-semibold text-brand">26742169</td>
                     <td className="px-4 py-3">
                       <div className="text-ink">Paciente: Marcella Grings Lanes</div>
                       <div className="text-xs text-muted">Parceiro: Ciclo</div>
@@ -198,7 +198,7 @@ export function FrenteCaixa() {
       <div className="flex flex-wrap items-center gap-3 border-t border-border-soft bg-white px-4 py-3">
         <div>
           <div className="label">Total a pagar</div>
-          <div className="text-2xl font-bold text-ink">{brl(selecionado ? TOTAL : 0)}</div>
+          <div className="font-display text-2xl font-bold tabular-nums text-ink">{brl(selecionado ? TOTAL : 0)}</div>
         </div>
         <Checkbox label="Não emitir guia(s) e/ou recibo(s)" checked={naoEmitir} onChange={(e) => setNaoEmitir(e.target.checked)} className="ml-4" />
         <div className="ml-auto flex flex-wrap items-center gap-2">

@@ -5,7 +5,7 @@ import { Tabs } from "../components/ui/Tabs";
 import { Modal } from "../components/ui/Modal";
 import { useToast } from "../components/ui/Toast";
 import { procedimentosRealizados, motivosCancelamento, type Status } from "../data/mock";
-import { brl } from "../lib/format";
+import { brl, cx } from "../lib/format";
 import { IconAssociados, IconParceiros, IconAgenda, IconEdit, IconShield } from "../components/ui/icons";
 
 const TABS = [
@@ -60,7 +60,9 @@ export function DetalheAtendimento() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <h1 className="text-[21px] font-semibold text-ink">Atendimento {id ?? "26742169"}</h1>
+          <h1 className="font-display text-[22px] font-semibold tracking-tight text-ink">
+            Atendimento <span className="font-mono text-[19px] font-semibold text-brand">{id ?? "26742169"}</span>
+          </h1>
           <StatusBadge status={status} />
         </div>
         <div className="flex items-center gap-2">
@@ -183,9 +185,74 @@ export function DetalheAtendimento() {
           </Card>
         )}
 
-        {tab !== "basico" && tab !== "rest-online" && (
+        {tab === "historico" && (
+          <Card className="p-5">
+            <ol className="relative ml-2 space-y-5 border-l border-border-soft pl-6">
+              {[
+                { t: "22/07/2026 13:12", tit: "Impresso no caixa", by: "Admin", tone: "bg-warn" },
+                { t: "22/07/2026 13:10", tit: "Enviado ao caixa", by: "Marcella.cl", tone: "bg-info" },
+                { t: "20/07/2026 09:41", tit: "Procedimentos atualizados", by: "Marcella.cl", tone: "bg-slate-400" },
+                { t: "18/07/2026 16:03", tit: "Atendimento agendado", by: "Marcella.cl", tone: "bg-brand" },
+              ].map((e, i) => (
+                <li key={i}>
+                  <span className={cx("absolute -left-[7px] mt-1 h-3.5 w-3.5 rounded-full border-2 border-white", e.tone)} />
+                  <div className="text-sm font-medium text-ink">{e.tit}</div>
+                  <div className="mt-0.5 text-xs text-muted">
+                    <span className="font-mono">{e.t}</span> · por {e.by}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Card>
+        )}
+
+        {tab === "caixa" && (
+          <Card>
+            <div className="border-b border-border-soft px-4 py-3 text-[15px] font-semibold text-ink">Pagamentos vinculados</div>
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr className="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-muted">
+                  <th className="px-4 py-2 font-semibold">Data</th>
+                  <th className="px-4 py-2 font-semibold">Forma</th>
+                  <th className="px-4 py-2 text-center font-semibold">Parcelas</th>
+                  <th className="px-4 py-2 text-right font-semibold">Valor</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-soft">
+                <tr className="hover:bg-slate-50/60">
+                  <td className="px-4 py-2.5 font-mono text-[12px] text-muted">22/07/2026 13:12</td>
+                  <td className="px-4 py-2.5 text-ink">Cartão de crédito</td>
+                  <td className="px-4 py-2.5 text-center">1/1</td>
+                  <td className="px-4 py-2.5 text-right font-mono font-semibold tabular-nums text-success">{brl(50)}</td>
+                </tr>
+                <tr className="bg-slate-50 font-semibold">
+                  <td colSpan={3} className="px-4 py-2.5 text-right text-muted">Saldo devedor:</td>
+                  <td className="px-4 py-2.5 text-right font-mono tabular-nums text-warn">{brl(161)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </Card>
+        )}
+
+        {tab === "recibos" && (
+          <Card>
+            <div className="border-b border-border-soft px-4 py-3 text-[15px] font-semibold text-ink">Recibos emitidos</div>
+            <div className="divide-y divide-border-soft">
+              {["Recibo 22/07/2026 · R$ 50,00", "Guia de autorização (E-Guia)"].map((r) => (
+                <div key={r} className="flex items-center justify-between px-4 py-3 text-sm">
+                  <span className="text-ink">{r}</span>
+                  <Button variant="secondary" onClick={() => toast("Documento enviado para impressão", "info")}>
+                    <IconEdit width={14} height={14} /> 2ª via
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {!["basico", "rest-online", "historico", "caixa", "recibos"].includes(tab) && (
           <Card className="flex flex-col items-center justify-center gap-2 py-16 text-center text-muted">
-            <span className="text-sm">Conteúdo da aba “{TABS.find((t) => t.key === tab)?.label}” — protótipo.</span>
+            <span className="text-sm">Sem registros nesta aba para este atendimento.</span>
           </Card>
         )}
       </div>

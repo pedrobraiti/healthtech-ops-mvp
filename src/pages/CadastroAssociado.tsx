@@ -112,7 +112,7 @@ export function CadastroAssociado() {
                 <span className="label">Matrícula</span>
                 <Badge tone="success">ATIVO</Badge>
               </div>
-              <div className="mt-1 text-xl font-bold text-ink tabular-nums">5795861</div>
+              <div className="mt-1 font-mono text-xl font-bold text-ink">5795861</div>
             </div>
             <div className="mt-3">
               <Label>Observações</Label>

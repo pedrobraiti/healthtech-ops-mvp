@@ -168,3 +168,51 @@ export const motivosCancelamento = [
 ];
 
 export const unidades = ["Unidade Matriz", "Unidade Sul", "Unidade Norte"];
+
+/* ---------- Relatórios ---------- */
+export const faturamentoMensal = [
+  { mes: "Fev", valor: 38200 },
+  { mes: "Mar", valor: 41750 },
+  { mes: "Abr", valor: 39980 },
+  { mes: "Mai", valor: 47320 },
+  { mes: "Jun", valor: 52140 },
+  { mes: "Jul", valor: 58730 },
+];
+
+export const atendimentosPorStatus: { label: string; valor: number; status: Status }[] = [
+  { label: "Pagos", valor: 812, status: "PAGO" },
+  { label: "Impressos no caixa", valor: 418, status: "IMPRESSO NO CAIXA" },
+  { label: "Agendados", valor: 356, status: "AGENDADO" },
+  { label: "Cancelados", valor: 94, status: "CANCELADO" },
+];
+
+export const topParceiros = [
+  { nome: "Ciclo", valor: 18420 },
+  { nome: "Laboratório Hadiak", valor: 14980 },
+  { nome: "Ceccon & Etzel", valor: 11250 },
+  { nome: "Cardio Prime Diagnósticos", valor: 8730 },
+  { nome: "Saúde da Família", valor: 5350 },
+];
+
+/* ---------- Financeiro ---------- */
+export interface LancamentoFinanceiro {
+  id: string;
+  descricao: string;
+  contraparte: string;
+  vencimento: string;
+  valor: number;
+  status: "PAGO" | "PENDENTE" | "AGENDADO";
+}
+
+export const contasReceber: LancamentoFinanceiro[] = [
+  { id: "REC-4821", descricao: "Cobrança de atendimento", contraparte: "Marcella Grings Lanes", vencimento: "05/07/2026", valor: 211, status: "PENDENTE" },
+  { id: "REC-4820", descricao: "Pacote Exames Laboratoriais", contraparte: "Ana Carolina Ossowsky", vencimento: "04/07/2026", valor: 494, status: "PAGO" },
+  { id: "REC-4819", descricao: "Consulta Especialista", contraparte: "Ana Paula Marchi", vencimento: "08/07/2026", valor: 166, status: "AGENDADO" },
+  { id: "REC-4818", descricao: "Retorno", contraparte: "João Pedro Santos", vencimento: "03/07/2026", valor: 80, status: "PAGO" },
+];
+
+export const contasPagar: LancamentoFinanceiro[] = [
+  { id: "REP-2210", descricao: "Repasse de procedimentos", contraparte: "Ciclo", vencimento: "10/07/2026", valor: 4820, status: "PENDENTE" },
+  { id: "REP-2209", descricao: "Repasse de exames", contraparte: "Laboratório Hadiak", vencimento: "10/07/2026", valor: 3210, status: "PENDENTE" },
+  { id: "REP-2208", descricao: "Repasse de consultas", contraparte: "Ceccon & Etzel", vencimento: "05/07/2026", valor: 1890, status: "PAGO" },
+];

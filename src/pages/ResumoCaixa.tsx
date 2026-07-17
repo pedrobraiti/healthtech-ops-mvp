@@ -48,21 +48,21 @@ export function ResumoCaixa() {
             <span className="label">Entradas</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-success-50 text-success"><IconArrowUp width={18} height={18} /></span>
           </div>
-          <div className="mt-2 text-2xl font-bold text-success">{brl(2336)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-success">{brl(2336)}</div>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <span className="label">Saídas</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-danger-50 text-danger"><IconArrowDown width={18} height={18} /></span>
           </div>
-          <div className="mt-2 text-2xl font-bold text-danger">{brl(0)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-danger">{brl(0)}</div>
         </Card>
         <Card className="border-brand-100 bg-brand-50/40 p-4">
           <div className="flex items-center justify-between">
             <span className="label">Saldo Atual</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white"><IconMoney width={16} height={16} /></span>
           </div>
-          <div className="mt-2 text-2xl font-bold text-brand">{brl(2336)}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums text-brand">{brl(2336)}</div>
         </Card>
       </div>
 
@@ -126,8 +126,8 @@ export function ResumoCaixa() {
             <tbody className="divide-y divide-border-soft">
               {resumoCaixaDetalhe.map((d) => (
                 <tr key={d.atendimento} className="hover:bg-slate-50/60">
-                  <td className="px-4 py-2.5 tabular-nums text-muted">{d.hora}</td>
-                  <td className="px-4 py-2.5 font-medium text-ink">{d.atendimento}</td>
+                  <td className="px-4 py-2.5 font-mono text-[12px] text-muted">{d.hora}</td>
+                  <td className="px-4 py-2.5 font-mono text-[12.5px] font-medium text-ink">{d.atendimento}</td>
                   <td className="px-4 py-2.5">
                     <Badge tone={d.origem === "Totem" ? "info" : "neutral"}>{d.origem}</Badge>
                   </td>
