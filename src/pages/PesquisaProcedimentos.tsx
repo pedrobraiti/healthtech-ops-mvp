@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/layout/Shell";
-import { Button, Card, Input } from "../components/ui/primitives";
+import { Badge, Button, Card, Input } from "../components/ui/primitives";
+import { Modal } from "../components/ui/Modal";
 import { useToast } from "../components/ui/Toast";
 import { pesquisaProcedimentos } from "../data/mock";
 import { brl, cx } from "../lib/format";
@@ -11,6 +12,24 @@ export function PesquisaProcedimentos() {
   const navigate = useNavigate();
   const toast = useToast();
   const [sel, setSel] = useState<number | null>(1);
+  const [cotacao, setCotacao] = useState(false);
+
+  const procSelecionado = sel !== null ? pesquisaProcedimentos[sel] : null;
+  const cotacoes = useMemo(() => {
+    const nomeBase = (procSelecionado?.procedimento ?? "Consulta Clínica Geral").split(" (")[0];
+    return pesquisaProcedimentos
+      .filter((p) => p.procedimento.startsWith(nomeBase))
+      .slice()
+      .sort((a, b) => a.valor - b.valor);
+  }, [procSelecionado]);
+
+  function usarMelhorPreco() {
+    const melhor = cotacoes[0];
+    const idx = pesquisaProcedimentos.findIndex((p) => p === melhor);
+    if (idx >= 0) setSel(idx);
+    setCotacao(false);
+    toast(`Selecionado: ${melhor.parceiro} — ${brl(melhor.valor)}`, "success");
+  }
 
   return (
     <div className="p-6">
@@ -26,9 +45,27 @@ export function PesquisaProcedimentos() {
             <span className="label mb-1.5 block">Parceiro</span>
             <Input icon={<IconSearch width={16} height={16} />} placeholder="Ex.: Ceccon & Etzel" />
           </div>
-          <Button variant="secondary">$ VC</Button>
-          <Button variant="secondary">Cotação</Button>
-          <Button variant="primary" className="px-3"><IconPlus width={16} height={16} /></Button>
+          <Button
+            variant="secondary"
+            title="Ver custos do procedimento selecionado"
+            onClick={() =>
+              procSelecionado
+                ? toast(`Custo de repasse: ${brl(procSelecionado.valor * 0.7)} (70% do valor de tabela)`, "info")
+                : toast("Selecione um procedimento na lista primeiro", "info")
+            }
+          >
+            $ Custos
+          </Button>
+          <Button
+            variant="secondary"
+            title="Comparar o preço deste procedimento entre parceiros"
+            onClick={() => setCotacao(true)}
+          >
+            Cotação
+          </Button>
+          <Button variant="primary" className="px-3" title="Adicionar procedimento" onClick={() => toast("Cadastro de procedimento disponível na versão completa", "info")}>
+            <IconPlus width={16} height={16} />
+          </Button>
         </div>
       </Card>
 
@@ -75,6 +112,52 @@ export function PesquisaProcedimentos() {
           </div>
         )}
       </Card>
+
+      {/* Modal de cotação */}
+      <Modal
+        open={cotacao}
+        onClose={() => setCotacao(false)}
+        width="max-w-xl"
+        title={`Cotação — ${(procSelecionado?.procedimento ?? "Consulta Clínica Geral").split(" (")[0]}`}
+        subtitle="Comparação de valores entre os parceiros credenciados."
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setCotacao(false)}>Fechar</Button>
+            <Button variant="primary" onClick={usarMelhorPreco}>Usar melhor preço</Button>
+          </>
+        }
+      >
+        <div className="overflow-hidden rounded-lg border border-border-soft">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-muted">
+                <th className="px-4 py-2 font-semibold">Parceiro</th>
+                <th className="px-4 py-2 font-semibold">Região</th>
+                <th className="px-4 py-2 text-right font-semibold">Valor</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border-soft">
+              {cotacoes.map((c, i) => (
+                <tr key={c.parceiro} className={i === 0 ? "bg-success-50/50" : undefined}>
+                  <td className="px-4 py-2.5">
+                    <span className="flex items-center gap-2 font-medium text-ink">
+                      {c.parceiro}
+                      {i === 0 && <Badge tone="success">Melhor preço</Badge>}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-muted">{c.regiao}</td>
+                  <td className={cx("px-4 py-2.5 text-right font-mono font-semibold tabular-nums", i === 0 ? "text-success" : "text-ink")}>{brl(c.valor)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {cotacoes.length > 1 && (
+          <p className="mt-3 text-xs text-muted">
+            Diferença de <strong className="text-ink">{brl(cotacoes[cotacoes.length - 1].valor - cotacoes[0].valor)}</strong> entre a maior e a menor cotação.
+          </p>
+        )}
+      </Modal>
     </div>
   );
 }

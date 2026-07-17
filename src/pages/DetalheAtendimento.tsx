@@ -8,17 +8,11 @@ import { procedimentosRealizados, motivosCancelamento, type Status } from "../da
 import { brl, cx } from "../lib/format";
 import { IconAssociados, IconParceiros, IconAgenda, IconEdit, IconShield } from "../components/ui/icons";
 
-const TABS = [
-  { key: "basico", label: "Básico" },
-  { key: "historico", label: "Histórico de alterações" },
-  { key: "caixa", label: "Caixa" },
-  { key: "2via", label: "2ª via" },
-  { key: "obs", label: "Observações (1)" },
-  { key: "cancelamento", label: "Cancelamento" },
-  { key: "recibos", label: "Recibos" },
-  { key: "restituicao", label: "Restituição" },
-  { key: "rest-online", label: "Rest. Online" },
-];
+interface Observacao {
+  texto: string;
+  autor: string;
+  data: string;
+}
 
 function InfoCard({ icon, label, title, sub }: { icon: React.ReactNode; label: string; title: string; sub: string }) {
   return (
@@ -41,15 +35,79 @@ export function DetalheAtendimento() {
   const [motivo, setMotivo] = useState("");
   const [obs, setObs] = useState("");
   const [confirm, setConfirm] = useState(false);
+  const [observacoes, setObservacoes] = useState<Observacao[]>([
+    { texto: "Paciente prefere contato por WhatsApp. Preparo do exame confirmado por telefone.", autor: "Marcella.cl", data: "20/07/2026 09:44" },
+  ]);
+  const [novaObs, setNovaObs] = useState("");
 
   const total = procedimentosRealizados.reduce((s, p) => s + p.total, 0);
   const obrigatorioObs = motivo === "Outro";
+
+  const TABS = [
+    { key: "basico", label: "Básico" },
+    { key: "historico", label: "Histórico de alterações" },
+    { key: "caixa", label: "Caixa" },
+    { key: "2via", label: "2ª via" },
+    { key: "obs", label: `Observações (${observacoes.length})` },
+    { key: "cancelamento", label: "Cancelamento" },
+    { key: "recibos", label: "Recibos" },
+    { key: "restituicao", label: "Restituição" },
+    { key: "rest-online", label: "Rest. Online" },
+  ];
+
+  function adicionarObs() {
+    if (!novaObs.trim()) return;
+    setObservacoes((prev) => [...prev, { texto: novaObs.trim(), autor: "Marcella.cl", data: "04/07/2026 · agora" }]);
+    setNovaObs("");
+    toast("Observação adicionada", "success");
+  }
 
   function preCancelar() {
     setStatus("CANCELADO");
     setConfirm(false);
     toast("Atendimento marcado como CANCELADO", "success");
   }
+
+  const cancelamentoCard = (
+    <Card className="border-danger/30">
+      <div className="flex items-center gap-2 border-b border-danger/20 bg-danger-50/60 px-4 py-3 text-[15px] font-semibold text-danger">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M15 9l-6 6M9 9l6 6" /></svg>
+        Ações de Cancelamento
+      </div>
+      <div className="p-4">
+        <p className="mb-3 text-[13px] text-muted">
+          Utilize esta área apenas se for necessário iniciar o processo de cancelamento deste atendimento impresso. Esta ação requer justificativa.
+        </p>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-[240px_1fr_auto] md:items-end">
+          <div>
+            <span className="label mb-1.5 block">Motivo do Cancelamento</span>
+            <Select value={motivo} onChange={(e) => setMotivo(e.target.value)}>
+              <option value="">Selecione um motivo…</option>
+              {motivosCancelamento.map((m) => (
+                <option key={m}>{m}</option>
+              ))}
+            </Select>
+          </div>
+          <div>
+            <span className="label mb-1.5 block">Observações {obrigatorioObs && <span className="text-danger">(obrigatório)</span>}</span>
+            <input
+              value={obs}
+              onChange={(e) => setObs(e.target.value)}
+              placeholder="Detalhe o motivo…"
+              className="h-9 w-full rounded-lg border border-border-soft bg-white px-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+            />
+          </div>
+          <Button
+            variant="danger"
+            disabled={!motivo || (obrigatorioObs && !obs) || status === "CANCELADO"}
+            onClick={() => setConfirm(true)}
+          >
+            Ativar Pré-Cancelamento
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
 
   return (
     <div className="p-6">
@@ -69,7 +127,7 @@ export function DetalheAtendimento() {
           <Link to={`/atendimentos/${id ?? "26742169"}/guia`}>
             <Button variant="secondary"><IconShield width={16} height={16} /> Ver E-Guia</Button>
           </Link>
-          <Button variant="secondary"><IconEdit width={16} height={16} /> Editar</Button>
+          <Button variant="secondary" onClick={() => toast("Edição completa do atendimento disponível na versão final", "info")}><IconEdit width={16} height={16} /> Editar</Button>
         </div>
       </div>
 
@@ -129,46 +187,78 @@ export function DetalheAtendimento() {
               </table>
             </Card>
 
-            {/* Ações de Cancelamento */}
-            <Card className="border-danger/30">
-              <div className="flex items-center gap-2 border-b border-danger/20 bg-danger-50/60 px-4 py-3 text-[15px] font-semibold text-danger">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M15 9l-6 6M9 9l6 6" /></svg>
-                Ações de Cancelamento
-              </div>
-              <div className="p-4">
-                <p className="mb-3 text-[13px] text-muted">
-                  Utilize esta área apenas se for necessário iniciar o processo de cancelamento deste atendimento impresso. Esta ação requer justificativa.
-                </p>
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-[240px_1fr_auto] md:items-end">
+            {cancelamentoCard}
+          </div>
+        )}
+
+        {tab === "cancelamento" && cancelamentoCard}
+
+        {tab === "obs" && (
+          <Card>
+            <div className="border-b border-border-soft px-4 py-3 text-[15px] font-semibold text-ink">Observações do atendimento</div>
+            <div className="divide-y divide-border-soft">
+              {observacoes.map((o, i) => (
+                <div key={i} className="flex gap-3 px-4 py-3">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-semibold text-brand">
+                    {o.autor.slice(0, 2).toUpperCase()}
+                  </span>
                   <div>
-                    <span className="label mb-1.5 block">Motivo do Cancelamento</span>
-                    <Select value={motivo} onChange={(e) => setMotivo(e.target.value)}>
-                      <option value="">Selecione um motivo…</option>
-                      {motivosCancelamento.map((m) => (
-                        <option key={m}>{m}</option>
-                      ))}
-                    </Select>
+                    <p className="text-sm text-ink">{o.texto}</p>
+                    <div className="mt-1 text-xs text-muted">{o.autor} · <span className="font-mono">{o.data}</span></div>
                   </div>
-                  <div>
-                    <span className="label mb-1.5 block">Observações {obrigatorioObs && <span className="text-danger">(obrigatório)</span>}</span>
-                    <input
-                      value={obs}
-                      onChange={(e) => setObs(e.target.value)}
-                      placeholder="Detalhe o motivo…"
-                      className="h-9 w-full rounded-lg border border-border-soft bg-white px-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                    />
-                  </div>
-                  <Button
-                    variant="danger"
-                    disabled={!motivo || (obrigatorioObs && !obs) || status === "CANCELADO"}
-                    onClick={() => setConfirm(true)}
-                  >
-                    Ativar Pré-Cancelamento
-                  </Button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2 border-t border-border-soft bg-slate-50/60 px-4 py-3">
+              <input
+                value={novaObs}
+                onChange={(e) => setNovaObs(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && adicionarObs()}
+                placeholder="Escreva uma nova observação…"
+                className="h-9 flex-1 rounded-lg border border-border-soft bg-white px-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+              <Button variant="primary" disabled={!novaObs.trim()} onClick={adicionarObs}>Adicionar</Button>
+            </div>
+          </Card>
+        )}
+
+        {tab === "2via" && (
+          <Card>
+            <div className="border-b border-border-soft px-4 py-3 text-[15px] font-semibold text-ink">Reimpressão de documentos</div>
+            <div className="divide-y divide-border-soft">
+              <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <div className="text-sm font-medium text-ink">E-Guia — Documento de autorização</div>
+                  <div className="text-xs text-muted">Emitida em 20/06/2026 · Chave <span className="font-mono">HIMALNB8</span></div>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="secondary" onClick={() => navigate(`/atendimentos/${id ?? "26742169"}/guia`)}>Ver documento</Button>
+                  <Button variant="secondary" onClick={() => toast("2ª via da guia enviada à impressora", "info")}>Imprimir 2ª via</Button>
                 </div>
               </div>
-            </Card>
-          </div>
+              <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <div className="text-sm font-medium text-ink">Recibo de pagamento — {brl(50)}</div>
+                  <div className="text-xs text-muted">Cartão de crédito · 22/07/2026 13:12</div>
+                </div>
+                <Button variant="secondary" onClick={() => toast("2ª via do recibo enviada à impressora", "info")}>Imprimir 2ª via</Button>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {tab === "restituicao" && (
+          <Card className="p-6">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-muted">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M3 12a9 9 0 109-9" /><path d="M3 4v5h5" /><path d="M12 8v4l3 2" /></svg>
+              </span>
+              <p className="max-w-md text-sm text-ink">Atendimento não consta em nenhum protocolo de restituição.</p>
+              <Button variant="secondary" onClick={() => toast("Solicitação registrada — o protocolo aparecerá em Rest. Online", "info")}>
+                Solicitar restituição
+              </Button>
+            </div>
+          </Card>
         )}
 
         {tab === "rest-online" && (
@@ -250,11 +340,6 @@ export function DetalheAtendimento() {
           </Card>
         )}
 
-        {!["basico", "rest-online", "historico", "caixa", "recibos"].includes(tab) && (
-          <Card className="flex flex-col items-center justify-center gap-2 py-16 text-center text-muted">
-            <span className="text-sm">Sem registros nesta aba para este atendimento.</span>
-          </Card>
-        )}
       </div>
 
       <Modal

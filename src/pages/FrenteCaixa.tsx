@@ -5,7 +5,7 @@ import { Button, Card, Checkbox, Input, Label, Select } from "../components/ui/p
 import { Tabs } from "../components/ui/Tabs";
 import { Modal } from "../components/ui/Modal";
 import { useToast } from "../components/ui/Toast";
-import { formasPagamento, motivosCancelamento } from "../data/mock";
+import { formasPagamento, motivosCancelamento, resumoCaixaFormas } from "../data/mock";
 import { brl } from "../lib/format";
 import { IconRefresh, IconSearch, IconTrash } from "../components/ui/icons";
 
@@ -30,6 +30,9 @@ export function FrenteCaixa() {
   const [sangria, setSangria] = useState(false);
   const [suprimento, setSuprimento] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
+  const [fechamento, setFechamento] = useState(false);
+  const [trocoModal, setTrocoModal] = useState(false);
+  const [recebido, setRecebido] = useState("");
 
   const cobrado = lancamentos.reduce((s, l) => s + l.valor, 0);
   const saldo = Math.max(TOTAL - cobrado, 0);
@@ -63,10 +66,9 @@ export function FrenteCaixa() {
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-1.5">
           <Button variant="secondary" onClick={() => toast("Gaveta aberta", "info")}>Abrir Gaveta</Button>
-          <Button variant="secondary" onClick={() => navigate("/financeiro/resumo")}>Resumo do Caixa</Button>
           <Button variant="secondary" onClick={() => setSangria(true)}>Lançar Sangria</Button>
           <Button variant="secondary" onClick={() => setSuprimento(true)}>Lançar Suprimento</Button>
-          <Button variant="danger" onClick={() => toast("Fechamento de caixa iniciado", "info")}>Fechamento de Caixa</Button>
+          <Button variant="danger" onClick={() => setFechamento(true)}>Fechamento de Caixa</Button>
           <span className="ml-1 flex items-center gap-1.5 rounded-md bg-slate-100 px-2 py-1 text-[11px] font-medium text-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-danger" /> Epson TM-T20: INATIVA
           </span>
@@ -207,7 +209,7 @@ export function FrenteCaixa() {
         <Checkbox label="Não emitir guia(s) e/ou recibo(s)" checked={naoEmitir} onChange={(e) => setNaoEmitir(e.target.checked)} className="ml-4" />
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <Button variant="secondary" onClick={() => setLinkModal(true)}>Gerar Link de Pagamento</Button>
-          <Button variant="secondary" onClick={() => toast(`Troco: ${brl(0)}`, "info")}>Calcular Troco</Button>
+          <Button variant="secondary" onClick={() => { setRecebido(""); setTrocoModal(true); }}>Calcular Troco</Button>
           <Button variant="primary" disabled={!selecionado} onClick={registrar} className="px-6">
             Registrar Cobrança →
           </Button>
@@ -228,8 +230,106 @@ export function FrenteCaixa() {
           https://pay.healthtechops.com.br/l/HIMALNB8-{TOTAL}
         </div>
       </Modal>
+
+      {/* Fechamento de Caixa */}
+      <Modal
+        open={fechamento}
+        onClose={() => setFechamento(false)}
+        width="max-w-xl"
+        title="Fechamento de Caixa 677738"
+        subtitle="Confira os totais do turno antes de encerrar."
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setFechamento(false)}>Voltar</Button>
+            <Button variant="danger" onClick={() => { setFechamento(false); toast("Caixa 677738 fechado — comprovante enviado à impressora", "success"); }}>
+              Confirmar fechamento
+            </Button>
+          </>
+        }
+      >
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-lg bg-slate-50 p-3">
+            <div className="label">Entradas</div>
+            <div className="mt-1 font-display text-lg font-bold tabular-nums text-success">{brl(2336)}</div>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-3">
+            <div className="label">Saídas</div>
+            <div className="mt-1 font-display text-lg font-bold tabular-nums text-danger">{brl(0)}</div>
+          </div>
+          <div className="rounded-lg bg-brand-50 p-3">
+            <div className="label">Saldo final</div>
+            <div className="mt-1 font-display text-lg font-bold tabular-nums text-brand">{brl(2336)}</div>
+          </div>
+        </div>
+        <div className="mt-4 overflow-hidden rounded-lg border border-border-soft">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-muted">
+                <th className="px-3 py-2 font-semibold">Forma</th>
+                <th className="px-3 py-2 text-center font-semibold">Qtd</th>
+                <th className="px-3 py-2 text-right font-semibold">Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border-soft">
+              {resumoCaixaFormas.map((f) => (
+                <tr key={f.forma}>
+                  <td className="px-3 py-2 text-ink">{f.forma}</td>
+                  <td className="px-3 py-2 text-center tabular-nums">{f.qtd}</td>
+                  <td className="px-3 py-2 text-right font-mono tabular-nums">{brl(f.total)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 flex items-start gap-2 rounded-lg bg-warn-50 p-3 text-xs text-amber-800">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mt-0.5 shrink-0 text-warn"><path d="M12 9v4M12 17h0" /><circle cx="12" cy="12" r="9" /></svg>
+          Esta ação encerra o turno do operador. Novas cobranças exigirão a abertura de um novo caixa.
+        </p>
+      </Modal>
+
+      {/* Calcular Troco */}
+      <Modal
+        open={trocoModal}
+        onClose={() => setTrocoModal(false)}
+        title="Calcular Troco"
+        footer={<Button variant="secondary" onClick={() => setTrocoModal(false)}>Fechar</Button>}
+      >
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-lg bg-slate-50 p-3">
+            <div className="label">Total a pagar</div>
+            <div className="mt-1 font-display text-lg font-bold tabular-nums text-ink">{brl(selecionado ? TOTAL : 0)}</div>
+          </div>
+          <div>
+            <Label>Valor recebido (R$)</Label>
+            <Input
+              autoFocus
+              value={recebido}
+              onChange={(e) => setRecebido(e.target.value)}
+              placeholder="0,00"
+              className="text-right font-mono"
+            />
+          </div>
+        </div>
+        {(() => {
+          const rec = parseFloat(recebido.replace(/\./g, "").replace(",", ".")) || 0;
+          const alvo = selecionado ? TOTAL : 0;
+          const troco = rec - alvo;
+          return (
+            <div className={cxTroco(troco)}>
+              <span className="text-sm font-medium">{troco < 0 ? "Falta receber" : "Troco a devolver"}</span>
+              <span className="font-display text-xl font-bold tabular-nums">{brl(Math.abs(troco))}</span>
+            </div>
+          );
+        })()}
+      </Modal>
     </div>
   );
+}
+
+function cxTroco(troco: number) {
+  const base = "mt-4 flex items-center justify-between rounded-lg border px-4 py-3";
+  if (troco < 0) return `${base} border-danger/30 bg-danger-50 text-danger`;
+  return `${base} border-success/30 bg-success-50 text-success`;
 }
 
 function ModalCaixa({

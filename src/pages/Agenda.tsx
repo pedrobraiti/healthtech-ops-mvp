@@ -26,6 +26,43 @@ const statusBlockStyle: Record<string, string> = {
   "IMPRESSO NO CAIXA": "border-l-warn bg-warn-50",
 };
 
+const semanaMock: { dia: string; data: string; hoje?: boolean; itens: { hora: string; nome: string; status: string }[] }[] = [
+  { dia: "Seg", data: "29/06", itens: [
+    { hora: "08:30", nome: "Carlos Mota", status: "REALIZADO" },
+    { hora: "10:00", nome: "Fernanda Reis", status: "REALIZADO" },
+    { hora: "15:20", nome: "Otávio Nunes", status: "REALIZADO" },
+  ]},
+  { dia: "Ter", data: "30/06", itens: [
+    { hora: "09:00", nome: "Paula Andrade", status: "REALIZADO" },
+    { hora: "11:40", nome: "Lucas Farias", status: "CANCELADO" },
+  ]},
+  { dia: "Qua", data: "01/07", itens: [
+    { hora: "08:00", nome: "Beatriz Ramos", status: "REALIZADO" },
+    { hora: "13:30", nome: "Sérgio Tavares", status: "REALIZADO" },
+    { hora: "16:10", nome: "Helena Dias", status: "REALIZADO" },
+  ]},
+  { dia: "Qui", data: "02/07", itens: [
+    { hora: "10:20", nome: "Rodrigo Peixoto", status: "REALIZADO" },
+  ]},
+  { dia: "Sex", data: "03/07", itens: [
+    { hora: "08:45", nome: "Ana Beatriz Maciel", status: "IMPRESSO NO CAIXA" },
+    { hora: "14:00", nome: "Vilton Barausse", status: "REALIZADO" },
+    { hora: "15:22", nome: "Franciane Santos", status: "PAGO" },
+  ]},
+  { dia: "Sáb", data: "04/07", hoje: true, itens: [
+    { hora: "08:30", nome: "Roberto P. Silva", status: "REALIZADO" },
+    { hora: "11:20", nome: "Ana Beatriz Maciel", status: "AGENDADO" },
+  ]},
+];
+
+const semanaDotStyle: Record<string, string> = {
+  REALIZADO: "border-l-success",
+  PAGO: "border-l-success",
+  AGENDADO: "border-l-info",
+  "IMPRESSO NO CAIXA": "border-l-warn",
+  CANCELADO: "border-l-slate-300",
+};
+
 interface ColunaProps {
   especialista: string;
   especialidade: string;
@@ -195,9 +232,11 @@ export function Agenda() {
           <span className="text-sm font-medium text-ink">Hoje, 04 Jul 2026</span>
           <button className="rotate-180 rounded-md p-1.5 text-muted hover:bg-slate-100"><IconChevronLeft width={16} height={16} /></button>
         </div>
-        <span className="hidden items-center gap-1.5 rounded-md bg-brand-50 px-2 py-1 text-[11px] font-medium text-brand lg:inline-flex">
-          <IconDrag width={13} height={13} /> Arraste os agendamentos para reagendar
-        </span>
+        {view === "Dia" && (
+          <span className="hidden items-center gap-1.5 rounded-md bg-brand-50 px-2 py-1 text-[11px] font-medium text-brand lg:inline-flex">
+            <IconDrag width={13} height={13} /> Arraste os agendamentos para reagendar
+          </span>
+        )}
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <Select className="w-40"><option>Todos os Parceiros</option></Select>
           <Select className="w-44"><option>Todas Especialidades</option></Select>
@@ -207,6 +246,43 @@ export function Agenda() {
       </div>
 
       <div className="flex min-h-0 flex-1">
+        {view === "Semana" ? (
+          <div className="min-w-0 flex-1 overflow-auto p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-sm font-medium text-muted">Semana de 29/06 a 04/07 · {semanaMock.reduce((s, d) => s + d.itens.length, 0)} atendimentos</span>
+              <span className="text-xs text-muted">Clique em um atendimento para abrir o detalhe</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+              {semanaMock.map((d) => (
+                <div key={d.dia} className={cx("flex flex-col overflow-hidden rounded-xl border bg-white card-shadow", d.hoje ? "border-brand" : "border-border-soft")}>
+                  <div className={cx("px-3 py-2 text-center", d.hoje ? "bg-brand text-white" : "bg-slate-50")}>
+                    <div className={cx("text-[11px] font-semibold uppercase tracking-wide", d.hoje ? "text-white/80" : "text-muted")}>{d.dia}</div>
+                    <div className={cx("font-display text-[15px] font-bold", d.hoje ? "text-white" : "text-ink")}>{d.data}</div>
+                  </div>
+                  <div className="flex-1 space-y-1.5 p-2">
+                    {d.itens.length === 0 && <div className="py-4 text-center text-xs text-muted">Sem agenda</div>}
+                    {d.itens.map((it, i) => (
+                      <button
+                        key={i}
+                        onClick={() => navigate("/atendimentos/26742169")}
+                        className={cx(
+                          "w-full rounded-md border border-border-soft border-l-4 bg-white px-2 py-1.5 text-left transition-shadow hover:card-shadow",
+                          semanaDotStyle[it.status] ?? "border-l-info"
+                        )}
+                      >
+                        <div className="font-mono text-[10.5px] text-muted">{it.hora}</div>
+                        <div className="truncate text-[12px] font-medium text-ink">{it.nome}</div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="border-t border-border-soft px-3 py-1.5 text-center text-[11px] text-muted">
+                    {d.itens.length} atendimento{d.itens.length === 1 ? "" : "s"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
         <div className="flex min-w-0 flex-1 overflow-auto">
           <div className="sticky left-0 z-30 w-14 shrink-0 border-r border-border-soft bg-white">
             <div className="sticky top-0 z-20 h-[45px] border-b border-border-soft bg-slate-50/80" />
@@ -236,6 +312,7 @@ export function Agenda() {
             ))}
           </div>
         </div>
+        )}
 
         <div className="hidden w-72 shrink-0 space-y-4 overflow-y-auto border-l border-border-soft bg-white p-4 xl:block">
           <div>

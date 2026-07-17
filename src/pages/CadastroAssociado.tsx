@@ -29,6 +29,8 @@ export function CadastroAssociado() {
   const [cpf, setCpf] = useState("052.448.409-08");
   const [cpfTouched, setCpfTouched] = useState(false);
   const [dedup, setDedup] = useState(false);
+  const [carteirinha, setCarteirinha] = useState(false);
+  const [confirmExcluir, setConfirmExcluir] = useState(false);
 
   function onCpfBlur() {
     if (cpfTouched && cpf.replace(/\D/g, "").length >= 11) setDedup(true);
@@ -41,10 +43,10 @@ export function CadastroAssociado() {
         actions={
           <>
             <Button variant="secondary" onClick={() => navigate("/atendimentos/novo")}>Cadastro de atendimento</Button>
-            <Button variant="secondary">Carteirinha</Button>
-            <Button variant="secondary">Imprimir cadastro</Button>
-            <Button variant="secondary" className="text-danger">Excluir</Button>
-            <Button variant="secondary">Novo</Button>
+            <Button variant="secondary" onClick={() => setCarteirinha(true)}>Carteirinha</Button>
+            <Button variant="secondary" onClick={() => toast("Cadastro enviado para impressão", "info")}>Imprimir cadastro</Button>
+            <Button variant="secondary" className="text-danger" onClick={() => setConfirmExcluir(true)}>Excluir</Button>
+            <Button variant="secondary" onClick={() => toast("Formulário limpo para novo cadastro", "info")}>Novo</Button>
             <Button variant="primary" onClick={() => toast("Cadastro salvo", "success")}>Salvar</Button>
           </>
         }
@@ -162,6 +164,72 @@ export function CadastroAssociado() {
           onRowClick={(a) => toast(`Abrindo cadastro de ${a.nome}`, "info")}
         />
       </div>
+
+      {/* Carteirinha do associado */}
+      <Modal
+        open={carteirinha}
+        onClose={() => setCarteirinha(false)}
+        title="Carteirinha do Associado"
+        subtitle="Versão digital — a física pode ser emitida na recepção."
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setCarteirinha(false)}>Fechar</Button>
+            <Button variant="primary" onClick={() => toast("Carteirinha enviada para impressão", "info")}>Imprimir carteirinha</Button>
+          </>
+        }
+      >
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-700 via-brand to-teal-500 p-5 text-white shadow-lg">
+          <div className="pointer-events-none absolute -right-10 -top-14 h-44 w-44 rounded-full bg-white/10" />
+          <div className="pointer-events-none absolute -bottom-16 -left-8 h-40 w-40 rounded-full bg-white/5" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" /><path d="M9 12l2 2 4-4" /></svg>
+              </span>
+              <div className="leading-tight">
+                <div className="font-display text-sm font-bold">HealthTech Ops</div>
+                <div className="text-[10px] text-white/70">Cartão do Associado</div>
+              </div>
+            </div>
+            <span className="rounded-md bg-white/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide">PLANO PADRÃO</span>
+          </div>
+          <div className="mt-6 font-display text-lg font-semibold tracking-wide">MARCELLA GRINGS LANES</div>
+          <div className="mt-3 flex items-end justify-between">
+            <div>
+              <div className="text-[9px] uppercase tracking-widest text-white/60">Matrícula</div>
+              <div className="font-mono text-base font-semibold tracking-widest">5795861</div>
+            </div>
+            <div>
+              <div className="text-[9px] uppercase tracking-widest text-white/60">Desde</div>
+              <div className="font-mono text-sm">03/2024</div>
+            </div>
+            <div>
+              <div className="text-[9px] uppercase tracking-widest text-white/60">Validade</div>
+              <div className="font-mono text-sm">12/2027</div>
+            </div>
+          </div>
+        </div>
+        <p className="mt-3 text-center text-xs text-muted">Apresente com documento oficial com foto no atendimento.</p>
+      </Modal>
+
+      {/* Confirmação de exclusão */}
+      <Modal
+        open={confirmExcluir}
+        onClose={() => setConfirmExcluir(false)}
+        title="Excluir cadastro"
+        subtitle="Esta ação não pode ser desfeita."
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setConfirmExcluir(false)}>Cancelar</Button>
+            <Button variant="danger" onClick={() => { setConfirmExcluir(false); toast("Cadastro excluído (simulação)", "success"); }}>Excluir definitivamente</Button>
+          </>
+        }
+      >
+        <p className="text-sm text-ink">
+          Excluir o cadastro de <strong>Marcella Grings Lanes</strong> (matrícula <span className="font-mono">5795861</span>)?
+          O histórico de atendimentos será mantido para fins fiscais.
+        </p>
+      </Modal>
 
       {/* Modal de deduplicação */}
       <Modal

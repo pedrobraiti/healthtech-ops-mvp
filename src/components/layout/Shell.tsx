@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { cx } from "../../lib/format";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
+
+export const ThemeContext = createContext<{ dark: boolean; toggle: () => void }>({
+  dark: false,
+  toggle: () => {},
+});
 
 export function Shell() {
   const location = useLocation();
@@ -13,17 +18,19 @@ export function Shell() {
   }, [dark]);
 
   return (
-    <div className={cx("theme-fade flex h-screen overflow-hidden bg-app", dark && "dark")}>
-      <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar dark={dark} onToggleTheme={() => setDark((d) => !d)} />
-        <main className="flex-1 overflow-y-auto">
-          <div key={location.pathname} className="animate-route">
-            <Outlet />
-          </div>
-        </main>
+    <ThemeContext.Provider value={{ dark, toggle: () => setDark((d) => !d) }}>
+      <div className={cx("theme-fade flex h-screen overflow-hidden bg-app", dark && "dark")}>
+        <Sidebar />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <Topbar />
+          <main className="flex-1 overflow-y-auto">
+            <div key={location.pathname} className="animate-route">
+              <Outlet />
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </ThemeContext.Provider>
   );
 }
 

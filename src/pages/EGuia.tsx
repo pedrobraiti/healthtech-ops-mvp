@@ -17,7 +17,7 @@ export function EGuia() {
         </button>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => window.print()}><IconPrint width={16} height={16} /> Imprimir</Button>
-          <Button variant="primary" onClick={() => toast("PDF gerado", "success")}><IconDownload width={16} height={16} /> Baixar PDF</Button>
+          <Button variant="primary" onClick={() => { toast("Use “Salvar como PDF” na janela de impressão", "info"); window.print(); }}><IconDownload width={16} height={16} /> Baixar PDF</Button>
         </div>
       </div>
 

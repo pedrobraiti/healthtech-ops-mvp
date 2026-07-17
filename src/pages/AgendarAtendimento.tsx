@@ -45,7 +45,10 @@ export function AgendarAtendimento() {
                       Marcella Grings Lanes
                       <Badge tone="brand">Score: 67.08</Badge>
                     </div>
-                    <button className="mt-0.5 flex items-center gap-1 text-xs font-medium text-info hover:underline">
+                    <button
+                      onClick={() => toast("Identificador ATD-2026-0715 gerado para este atendimento", "success")}
+                      className="mt-0.5 flex items-center gap-1 text-xs font-medium text-info hover:underline"
+                    >
                       <IconPlus width={12} height={12} /> Gerar identificador para este atendimento
                     </button>
                   </div>

@@ -15,7 +15,7 @@ import { EGuia } from "./pages/EGuia";
 import { Financeiro } from "./pages/Financeiro";
 import { Relatorios } from "./pages/Relatorios";
 import { CadastroEspecialista } from "./pages/CadastroEspecialista";
-import { Placeholder } from "./pages/Placeholder";
+import { Configuracoes } from "./pages/Configuracoes";
 
 export default function App() {
   return (
@@ -41,7 +41,7 @@ export default function App() {
         <Route path="/caixa" element={<Navigate to="/financeiro/pdv" replace />} />
         <Route path="/caixa/resumo" element={<Navigate to="/financeiro/resumo" replace />} />
         <Route path="/relatorios" element={<Relatorios />} />
-        <Route path="/configuracoes" element={<Placeholder title="Configurações" />} />
+        <Route path="/configuracoes" element={<Configuracoes />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/login" replace />} />

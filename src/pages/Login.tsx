@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, Input, Label } from "../components/ui/primitives";
+import { useToast } from "../components/ui/Toast";
 import { IconShield } from "../components/ui/icons";
 
 export function Login() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [show, setShow] = useState(false);
   const [user, setUser] = useState("Marcella.cl");
   const [pass, setPass] = useState("operador2026");
@@ -43,7 +45,11 @@ export function Login() {
             <div>
               <div className="mb-1.5 flex items-center justify-between">
                 <span className="label">Senha</span>
-                <button type="button" className="text-xs font-medium text-info hover:underline">
+                <button
+                  type="button"
+                  onClick={() => toast("Link de redefinição enviado ao e-mail cadastrado", "info")}
+                  className="text-xs font-medium text-info hover:underline"
+                >
                   Esqueci minha senha
                 </button>
               </div>

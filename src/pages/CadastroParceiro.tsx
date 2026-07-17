@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/layout/Shell";
 import { Badge, Button, Checkbox, Input, Label, Radio, Section, Select, StatusBadge } from "../components/ui/primitives";
 import { Modal } from "../components/ui/Modal";
@@ -24,7 +25,12 @@ const parceirosColumns: Column<ParceiroRow>[] = [
 
 export function CadastroParceiro() {
   const toast = useToast();
+  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
+  const [canais, setCanais] = useState(false);
+  const [canalWhats, setCanalWhats] = useState(true);
+  const [canalSms, setCanalSms] = useState(false);
+  const [canalEmail, setCanalEmail] = useState(true);
 
   return (
     <div className="p-6">
@@ -65,7 +71,20 @@ export function CadastroParceiro() {
           </Section>
 
           {/* Endereço */}
-          <Section title="Endereço Principal" action={<div className="flex gap-3"><button className="text-xs font-medium text-brand hover:underline">+ Endereços</button><button className="text-xs font-medium text-info hover:underline">Ver no Maps</button></div>}>
+          <Section
+            title="Endereço Principal"
+            action={
+              <div className="flex gap-3">
+                <button onClick={() => toast("Múltiplos endereços disponíveis na versão completa", "info")} className="text-xs font-medium text-brand hover:underline">+ Endereços</button>
+                <button
+                  onClick={() => window.open("https://www.google.com/maps/search/?api=1&query=Rua+Rui+Barbosa+868+Campo+Largo+PR", "_blank", "noopener")}
+                  className="text-xs font-medium text-info hover:underline"
+                >
+                  Ver no Maps
+                </button>
+              </div>
+            }
+          >
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <div><Label>CEP</Label><Input placeholder="00000-000" /></div>
               <div className="col-span-2"><Label>Logradouro</Label><Input /></div>
@@ -99,7 +118,7 @@ export function CadastroParceiro() {
                 </tbody>
               </table>
             </div>
-            <button className="mt-3 flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"><IconPlus width={15} height={15} /> Vincular Especialista</button>
+            <button onClick={() => navigate("/especialistas")} className="mt-3 flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"><IconPlus width={15} height={15} /> Vincular Especialista</button>
           </Section>
 
           {/* Dados Bancários + Telefones */}
@@ -141,10 +160,11 @@ export function CadastroParceiro() {
           </div>
 
           <Section title="Comunicação">
-            <button className="flex w-full items-center justify-between rounded-lg border border-border-soft px-3 py-2.5 text-sm text-ink hover:bg-slate-50">
+            <button onClick={() => setCanais(true)} className="flex w-full items-center justify-between rounded-lg border border-border-soft px-3 py-2.5 text-sm text-ink hover:bg-slate-50">
               Canais de Notificações
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 18l6-6-6-6" /></svg>
             </button>
+            <p className="mt-2 text-[11px] text-muted">Define como o parceiro é avisado sobre novos agendamentos.</p>
           </Section>
 
           <Section title="GED" action={<button className="rounded-md p-1 text-brand hover:bg-brand-50"><IconPlus width={18} height={18} /></button>}>
@@ -170,6 +190,43 @@ export function CadastroParceiro() {
           onRowClick={(p) => toast(`Abrindo cadastro de ${p.fantasia}`, "info")}
         />
       </div>
+
+      {/* Canais de Notificações */}
+      <Modal
+        open={canais}
+        onClose={() => setCanais(false)}
+        title="Canais de Notificações"
+        subtitle="Como este parceiro recebe avisos de novos agendamentos."
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setCanais(false)}>Cancelar</Button>
+            <Button variant="primary" onClick={() => { setCanais(false); toast("Canais de notificação salvos", "success"); }}>Salvar canais</Button>
+          </>
+        }
+      >
+        <div className="divide-y divide-border-soft">
+          {[
+            { label: "WhatsApp", desc: "Mensagem no número principal do parceiro", on: canalWhats, set: setCanalWhats },
+            { label: "SMS", desc: "Fallback quando o WhatsApp não confirmar entrega", on: canalSms, set: setCanalSms },
+            { label: "E-mail", desc: "Resumo diário da agenda do dia seguinte", on: canalEmail, set: setCanalEmail },
+          ].map((c) => (
+            <div key={c.label} className="flex items-center justify-between py-3">
+              <div>
+                <div className="text-sm font-medium text-ink">{c.label}</div>
+                <div className="text-xs text-muted">{c.desc}</div>
+              </div>
+              <button
+                role="switch"
+                aria-checked={c.on}
+                onClick={() => c.set((v: boolean) => !v)}
+                className={c.on ? "h-6 w-11 shrink-0 rounded-full bg-brand p-0.5 transition-colors" : "h-6 w-11 shrink-0 rounded-full bg-slate-300 p-0.5 transition-colors"}
+              >
+                <span className={c.on ? "block h-5 w-5 translate-x-5 rounded-full bg-white transition-transform" : "block h-5 w-5 rounded-full bg-white transition-transform"} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </Modal>
 
       <Modal
         open={modal}

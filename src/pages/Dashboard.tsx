@@ -1,11 +1,13 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/layout/Shell";
-import { Card, CardHeader, Badge, StatusBadge } from "../components/ui/primitives";
+import { Button, Card, CardHeader, Badge, StatusBadge } from "../components/ui/primitives";
 import { MiniCalendar } from "../components/ui/MiniCalendar";
 import { CountInt } from "../components/ui/Animated";
+import { useToast } from "../components/ui/Toast";
 import { brl } from "../lib/format";
 import { proximosHorarios } from "../data/mock";
-import { IconCaixa, IconInfo } from "../components/ui/icons";
+import { IconAgenda, IconCaixa, IconDrag, IconInfo, IconMoon, IconPlus } from "../components/ui/icons";
 
 function Tile({ label, value, tone }: { label: string; value: number; tone: "info" | "warn" | "success" }) {
   const bar = { info: "bg-info", warn: "bg-warn", success: "bg-success" }[tone];
@@ -23,9 +25,45 @@ function Tile({ label, value, tone }: { label: string; value: number; tone: "inf
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const toast = useToast();
+  const [welcome, setWelcome] = useState(() => localStorage.getItem("htops-welcome") !== "off");
+  const [nota, setNota] = useState("");
+
+  function dispensarWelcome() {
+    localStorage.setItem("htops-welcome", "off");
+    setWelcome(false);
+  }
+
   return (
     <div className="p-6">
-      <PageHeader title="Visão Geral" />
+      <PageHeader title="Visão Geral" subtitle="Sábado, 04 de julho de 2026 · Unidade Matriz" />
+
+      {welcome && (
+        <div className="relative mt-5 overflow-hidden rounded-xl border border-brand-100 bg-gradient-to-r from-brand-50 to-teal-50 p-5 dark:to-brand-50">
+          <button
+            onClick={dispensarWelcome}
+            aria-label="Dispensar boas-vindas"
+            className="absolute right-3 top-3 rounded-md p-1 text-muted hover:bg-white/60 hover:text-ink"
+          >
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" /></svg>
+          </button>
+          <h2 className="font-display text-[17px] font-semibold text-ink">Bem-vindo ao protótipo do HealthTech Ops 👋</h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted">
+            Este é um ambiente de demonstração — todos os dados são fictícios. Explore à vontade: nada aqui afeta sistemas reais.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="flex items-center gap-1.5 rounded-lg bg-white/70 px-3 py-1.5 text-xs font-medium text-ink dark:bg-white/10">
+              <IconPlus width={14} height={14} className="text-brand" /> “+ Nova Guia” cria um agendamento
+            </span>
+            <span className="flex items-center gap-1.5 rounded-lg bg-white/70 px-3 py-1.5 text-xs font-medium text-ink dark:bg-white/10">
+              <IconDrag width={14} height={14} className="text-brand" /> Na Agenda, arraste um horário para reagendar
+            </span>
+            <span className="flex items-center gap-1.5 rounded-lg bg-white/70 px-3 py-1.5 text-xs font-medium text-ink dark:bg-white/10">
+              <IconMoon width={14} height={14} className="text-brand" /> Alterne o tema escuro no topo da tela
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[1fr_320px]">
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
@@ -34,7 +72,14 @@ export function Dashboard() {
             <CardHeader
               icon={<IconCaixa />}
               title="Caixa de Hoje"
-              action={<Badge tone="success">ABERTO</Badge>}
+              action={
+                <span className="flex items-center gap-3">
+                  <button onClick={() => navigate("/financeiro/resumo")} className="text-xs font-medium text-info hover:underline">
+                    Ver resumo →
+                  </button>
+                  <Badge tone="success">ABERTO</Badge>
+                </span>
+              }
             />
             <div className="grid grid-cols-3 gap-3 p-4">
               <div className="rounded-lg bg-slate-50 p-3">
@@ -124,9 +169,21 @@ export function Dashboard() {
                 </div>
               </div>
               <textarea
+                value={nota}
+                onChange={(e) => setNota(e.target.value)}
                 placeholder="Digite uma nota rápida…"
-                className="min-h-[140px] w-full resize-none rounded-lg border border-border-soft bg-slate-50 p-3 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="min-h-[110px] w-full resize-none rounded-lg border border-border-soft bg-slate-50 p-3 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
+              <div className="flex justify-end">
+                <Button
+                  variant="secondary"
+                  className="h-8 px-3 text-[13px]"
+                  disabled={!nota.trim()}
+                  onClick={() => { toast("Nota salva", "success"); setNota(""); }}
+                >
+                  Salvar nota
+                </Button>
+              </div>
             </div>
           </Card>
         </div>

@@ -243,6 +243,8 @@ export interface LancamentoFinanceiro {
 }
 
 export const contasReceber: LancamentoFinanceiro[] = [
+  { id: "REC-4823", descricao: "Faturamento convênio Ciclo Saúde", contraparte: "Ciclo Saúde (convênio)", vencimento: "15/07/2026", valor: 6840, status: "AGENDADO" },
+  { id: "REC-4822", descricao: "Pacote empresarial — exames ocupacionais", contraparte: "Working Medicina do Trabalho", vencimento: "12/07/2026", valor: 4560, status: "PENDENTE" },
   { id: "REC-4821", descricao: "Cobrança de atendimento", contraparte: "Marcella Grings Lanes", vencimento: "05/07/2026", valor: 211, status: "PENDENTE" },
   { id: "REC-4820", descricao: "Pacote Exames Laboratoriais", contraparte: "Ana Carolina Ossowsky", vencimento: "04/07/2026", valor: 494, status: "PAGO" },
   { id: "REC-4819", descricao: "Consulta Especialista", contraparte: "Ana Paula Marchi", vencimento: "08/07/2026", valor: 166, status: "AGENDADO" },

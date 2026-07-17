@@ -13,6 +13,16 @@ function statusTone(s: LancamentoFinanceiro["status"]) {
   return s === "PAGO" ? "success" : s === "PENDENTE" ? "warn" : "info";
 }
 
+const fluxoDiario = [
+  { dia: "28/06", entradas: 1890, saidas: 640 },
+  { dia: "29/06", entradas: 2410, saidas: 1120 },
+  { dia: "30/06", entradas: 2140, saidas: 380 },
+  { dia: "01/07", entradas: 2980, saidas: 1540 },
+  { dia: "02/07", entradas: 2620, saidas: 720 },
+  { dia: "03/07", entradas: 3140, saidas: 980 },
+  { dia: "04/07", entradas: 2336, saidas: 0, hoje: true },
+];
+
 function Tabela({ dados }: { dados: LancamentoFinanceiro[] }) {
   return (
     <table className="w-full text-[13px]">
@@ -106,9 +116,39 @@ export function Financeiro() {
         {tab === "receber" && <Tabela dados={contasReceber} />}
         {tab === "pagar" && <Tabela dados={contasPagar} />}
         {tab === "fluxo" && (
-          <div className="flex flex-col items-center gap-2 py-16 text-center text-muted">
-            <IconMoney width={26} height={26} className="text-slate-300" />
-            <span className="text-sm">Projeção de fluxo de caixa consolidada por dia — disponível na versão completa.</span>
+          <div className="p-5">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm text-muted">Movimento consolidado dos últimos 7 dias.</p>
+              <div className="flex items-center gap-4 text-xs text-muted">
+                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-success" /> Entradas</span>
+                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-danger" /> Saídas</span>
+              </div>
+            </div>
+            <div className="flex items-end gap-4">
+              {fluxoDiario.map((d) => {
+                const max = Math.max(...fluxoDiario.map((x) => x.entradas));
+                return (
+                  <div key={d.dia} className="flex flex-1 flex-col items-center gap-2">
+                    <div className="flex h-44 w-full items-end justify-center gap-1">
+                      <div
+                        title={`Entradas ${d.dia}: ${brl(d.entradas)}`}
+                        style={{ height: `${(d.entradas / max) * 100}%` }}
+                        className="w-full max-w-7 rounded-t-[4px] bg-success/80 transition-colors hover:bg-success"
+                      />
+                      <div
+                        title={`Saídas ${d.dia}: ${brl(d.saidas)}`}
+                        style={{ height: `${Math.max((d.saidas / max) * 100, d.saidas ? 3 : 1)}%` }}
+                        className="w-full max-w-7 rounded-t-[4px] bg-danger/70 transition-colors hover:bg-danger"
+                      />
+                    </div>
+                    <span className={d.hoje ? "font-mono text-[11px] font-bold text-brand" : "font-mono text-[11px] text-muted"}>
+                      {d.hoje ? "hoje" : d.dia}
+                    </span>
+                    <span className="font-mono text-[10px] tabular-nums text-muted">+{((d.entradas - d.saidas) / 1000).toFixed(1)}k</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </Card>
